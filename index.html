@@ -2,300 +2,289 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>人生の主導権診断 | Re:Self Courage</title>
-  <meta name="description" content="あなたは、自分の人生を生きていますか？3分・20問で、あなたの現在地が分かります。" />
+  <meta name="description" content="あなたは今、自分の人生を生きていますか？3分・20問で、あなたの現在地が分かります。Re:Self Courage の人生の主導権診断。" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="lp.css" />
 </head>
 <body>
 
-  <canvas id="bgCanvas"></canvas>
+  <!-- 夜明けグラデーション背景（JS でスクロール連動） -->
+  <div id="bgDawn"></div>
 
-  <div id="app">
+  <!-- 夜空背景キャンバス -->
+  <canvas id="lpCanvas"></canvas>
 
-    <!-- ========== STAGE 1: オープニング ========== -->
-    <section class="stage" id="stage-opening">
-      <div class="opening-wrap">
+  <!-- ============ スティッキーヘッダー ============ -->
+  <header class="lp-header" id="lpHeader">
+    <span class="header-brand">
+      <span class="hb-re">Re:</span><span class="hb-self">Self</span><span class="hb-courage"> Courage</span>
+    </span>
+    <a href="diagnosis.html" class="header-btn">診断する</a>
+  </header>
 
-        <div class="opening-brand op-anim op-anim-1">
-          <span class="brand-re">Re:</span><span class="brand-self">Self </span><span class="brand-courage">Courage</span>
-        </div>
-
-        <div class="opening-line op-anim op-anim-2"></div>
-
-        <h1 class="opening-title op-anim op-anim-3">
-          人生の<br />主導権診断
-        </h1>
-
-        <p class="opening-catch op-anim op-anim-4">
-          あなたは、<br />自分の人生を<br />生きていますか？
-        </p>
-
-        <p class="opening-desc op-anim op-anim-5">
-          3分・20問で、あなたの現在地が分かります。
-        </p>
-
-        <div class="opening-cta-wrap op-anim op-anim-6">
-          <button class="btn-start" onclick="goToStage('intro')">
-            <span class="btn-start-text">診断をスタートする</span>
-            <span class="btn-start-arrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
-            </span>
-          </button>
-          <p class="opening-note">全20問・無料・匿名</p>
-        </div>
-
+  <!-- ============ ① ファーストビュー ============ -->
+  <section class="lp-section fv-section" id="s-fv">
+    <div class="fv-parallax-layer" id="fvParallax"></div>
+    <div class="fv-inner">
+      <p class="fv-brand fv-s1">Re:Self Courage</p>
+      <div class="fv-rule fv-s2"></div>
+      <h1 class="fv-catch fv-s3">
+        人生の主導権を、<br />あなたに取り戻す。
+      </h1>
+      <p class="fv-sub fv-s4">
+        あなたは今、自分の人生を<br />生きていますか？
+      </p>
+      <a href="diagnosis.html" class="btn-gold fv-s5">
+        <span>無料で診断する</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+      <p class="fv-note fv-s6">所要時間 約3分 &nbsp;·&nbsp; 全20問 &nbsp;·&nbsp; 無料 &nbsp;·&nbsp; 匿名</p>
+      <div class="scroll-hint fv-s7">
+        <div class="scroll-bar"></div>
+        <span class="scroll-label">scroll</span>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- ========== STAGE 2: 診断説明 ========== -->
-    <section class="stage hidden" id="stage-intro">
-      <div class="glass-card intro-card">
-        <p class="intro-eyebrow">診断について</p>
-        <h2 class="intro-heading">5つの視点で<br />あなたを映し出す</h2>
-        <p class="intro-lead">
-          正直に、直感で答えてください。<br />
-          正解も不正解もありません。
-        </p>
+  <!-- ============ ② 共感 ============ -->
+  <section class="lp-section empathy-section" id="s-empathy">
+    <div class="em-inner">
 
-        <div class="intro-cats">
-          <div class="intro-cat">
-            <span class="intro-cat-icon">◈</span>
-            <span class="intro-cat-label">自分軸</span>
-          </div>
-          <div class="intro-cat">
-            <span class="intro-cat-icon">◈</span>
-            <span class="intro-cat-label">本音</span>
-          </div>
-          <div class="intro-cat">
-            <span class="intro-cat-icon">◈</span>
-            <span class="intro-cat-label">自己信頼</span>
-          </div>
-          <div class="intro-cat">
-            <span class="intro-cat-icon">◈</span>
-            <span class="intro-cat-label">行動力</span>
-          </div>
-          <div class="intro-cat">
-            <span class="intro-cat-icon">◈</span>
-            <span class="intro-cat-label">自己受容</span>
-          </div>
+      <div class="em-lines">
+        <div class="em-stanza reveal">
+          <p class="em-prelude">今日も、</p>
+          <p class="em-impact">誰かを優先してしまった。</p>
         </div>
-
-        <div class="intro-scale">
-          <p class="intro-scale-title">回答は5段階で選んでください</p>
-          <div class="intro-scale-row">
-            <span class="intro-scale-end">まったく<br />当てはまらない</span>
-            <div class="intro-scale-dots">
-              <span class="intro-scale-dot"></span>
-              <span class="intro-scale-dot"></span>
-              <span class="intro-scale-dot"></span>
-              <span class="intro-scale-dot"></span>
-              <span class="intro-scale-dot"></span>
-            </div>
-            <span class="intro-scale-end">とても<br />当てはまる</span>
-          </div>
+        <div class="em-stanza reveal">
+          <p class="em-prelude">気づけば、</p>
+          <p class="em-impact">自分の気持ちは後回し。</p>
         </div>
-
-        <button class="btn-primary" onclick="startQuiz()">
-          <span>はじめる</span>
-          <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
-        </button>
-      </div>
-    </section>
-
-    <!-- ========== STAGE 3: 診断（20問） ========== -->
-    <section class="stage hidden" id="stage-quiz">
-      <div class="progress-container">
-        <div class="progress-header">
-          <span class="progress-label">診断中</span>
-          <span class="progress-count" id="progressCount">1 / 20</span>
-        </div>
-        <div class="progress-track">
-          <div class="progress-fill" id="progressBar" style="width:5%"></div>
+        <div class="em-stanza reveal">
+          <p class="em-prelude">そんな毎日が、</p>
+          <p class="em-impact">当たり前になっていませんか？</p>
         </div>
       </div>
 
-      <div class="question-wrapper">
-        <div class="glass-card question-card" id="questionCard">
-          <button class="btn-prev" id="btnPrev" onclick="goToPrevQuestion()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-            <span>前の質問</span>
-          </button>
-          <div class="q-category" id="questionCategory">自分軸</div>
-          <p class="q-text" id="questionText">質問テキスト</p>
-          <div class="answer-opts" id="answerOptions">
-            <button class="answer-btn" data-value="1" onclick="selectAnswer(1)">
-              <span class="ans-dot"></span>
-              <span class="ans-label">まったく<br />当てはまらない</span>
-            </button>
-            <button class="answer-btn" data-value="2" onclick="selectAnswer(2)">
-              <span class="ans-dot"></span>
-              <span class="ans-label">あまり<br />当てはまらない</span>
-            </button>
-            <button class="answer-btn" data-value="3" onclick="selectAnswer(3)">
-              <span class="ans-dot"></span>
-              <span class="ans-label">どちらとも<br />いえない</span>
-            </button>
-            <button class="answer-btn" data-value="4" onclick="selectAnswer(4)">
-              <span class="ans-dot"></span>
-              <span class="ans-label">やや<br />当てはまる</span>
-            </button>
-            <button class="answer-btn" data-value="5" onclick="selectAnswer(5)">
-              <span class="ans-dot"></span>
-              <span class="ans-label">とても<br />当てはまる</span>
-            </button>
+      <div class="em-divider reveal"></div>
+
+      <p class="em-close reveal">
+        一つでも心が反応したなら、<br />
+        <span class="text-gold">それは人生の主導権を取り戻すサインです。</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ ③ 人生の主導権とは？ ============ -->
+  <section class="lp-section about-section" id="s-about">
+    <div id="aboutBg" class="section-parallax-bg"></div>
+    <div class="about-inner">
+      <p class="section-tag reveal">Re:Self Courageが伝えたいこと</p>
+
+      <p class="aq-label reveal">人生の主導権とは、</p>
+
+      <p class="aq-main reveal">
+        誰かの期待ではなく、<br />
+        <span class="text-gold">自分の意思で選べる力。</span>
+      </p>
+
+      <div class="aq-rule reveal"></div>
+
+      <p class="aq-sub reveal">
+        自分勝手になることではなく、<br />
+        自分を知ることから始まります。
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ ④ 診断で分かること ============ -->
+  <section class="lp-section features-section" id="s-features">
+    <div class="feat-inner">
+      <p class="section-tag reveal">この診断で分かること</p>
+      <h2 class="section-title reveal">5つの視点から<br />あなたを映し出す</h2>
+
+      <div class="feat-timeline">
+        <div class="ftl-item reveal">
+          <div class="ftl-left">
+            <div class="ftl-dot"></div>
+            <div class="ftl-line"></div>
+          </div>
+          <div class="ftl-right">
+            <span class="ftl-num">01</span>
+            <p class="ftl-name">自分軸</p>
+            <p class="ftl-desc">決断の中心がどこにあるか</p>
+          </div>
+        </div>
+        <div class="ftl-item reveal">
+          <div class="ftl-left">
+            <div class="ftl-dot"></div>
+            <div class="ftl-line"></div>
+          </div>
+          <div class="ftl-right">
+            <span class="ftl-num">02</span>
+            <p class="ftl-name">本音</p>
+            <p class="ftl-desc">自分の気持ちに正直でいられるか</p>
+          </div>
+        </div>
+        <div class="ftl-item reveal">
+          <div class="ftl-left">
+            <div class="ftl-dot"></div>
+            <div class="ftl-line"></div>
+          </div>
+          <div class="ftl-right">
+            <span class="ftl-num">03</span>
+            <p class="ftl-name">自己信頼</p>
+            <p class="ftl-desc">自分を信じる力があるか</p>
+          </div>
+        </div>
+        <div class="ftl-item reveal">
+          <div class="ftl-left">
+            <div class="ftl-dot"></div>
+            <div class="ftl-line"></div>
+          </div>
+          <div class="ftl-right">
+            <span class="ftl-num">04</span>
+            <p class="ftl-name">行動力</p>
+            <p class="ftl-desc">自分で選んで動けるか</p>
+          </div>
+        </div>
+        <div class="ftl-item reveal">
+          <div class="ftl-left">
+            <div class="ftl-dot"></div>
+          </div>
+          <div class="ftl-right">
+            <span class="ftl-num">05</span>
+            <p class="ftl-name">自己受容</p>
+            <p class="ftl-desc">ありのままの自分を受け入れられるか</p>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- ========== STAGE 3.5: 分析中 ========== -->
-    <section class="stage hidden" id="stage-analyzing">
-      <div class="analyzing-wrap">
-        <div class="analyzing-ring-wrap">
-          <div class="analyzing-ring"></div>
-          <div class="analyzing-ring-2"></div>
-          <div class="analyzing-dot"></div>
+  <!-- ============ ⑤ 診断結果イメージ ============ -->
+  <section class="lp-section preview-section" id="s-preview">
+    <div class="preview-inner">
+      <p class="section-tag reveal">診断を受けると</p>
+      <h2 class="section-title reveal">あなたの「現在地」が<br />分かります</h2>
+
+      <div class="preview-showcase reveal">
+        <p class="mock-eyebrow">あなたのタイプ</p>
+        <h3 class="mock-type">自分軸回復期</h3>
+        <span class="mock-lv">Lv.2</span>
+        <div class="mock-score-row">
+          <div class="mock-ring">
+            <span class="mock-score-num">68</span>
+            <span class="mock-score-unit">点</span>
+          </div>
+          <div class="mock-score-label">人生の<br />主導権スコア</div>
         </div>
-        <p class="analyzing-msg" id="analyzingMsg">あなたの回答を分析しています</p>
-        <div class="analyzing-progress">
-          <span></span><span></span><span></span>
+        <div class="mock-bars">
+          <div class="mock-bar-row">
+            <span class="mock-bar-name">自分軸</span>
+            <div class="mock-bar-track"><div class="mock-bar-fill" style="width:58%"></div></div>
+            <span class="mock-bar-val">58</span>
+          </div>
+          <div class="mock-bar-row">
+            <span class="mock-bar-name">本音</span>
+            <div class="mock-bar-track"><div class="mock-bar-fill" style="width:72%"></div></div>
+            <span class="mock-bar-val">72</span>
+          </div>
+          <div class="mock-bar-row">
+            <span class="mock-bar-name">自己信頼</span>
+            <div class="mock-bar-track"><div class="mock-bar-fill" style="width:48%"></div></div>
+            <span class="mock-bar-val">48</span>
+          </div>
+          <div class="mock-bar-row">
+            <span class="mock-bar-name">行動力</span>
+            <div class="mock-bar-track"><div class="mock-bar-fill" style="width:65%"></div></div>
+            <span class="mock-bar-val">65</span>
+          </div>
+          <div class="mock-bar-row">
+            <span class="mock-bar-name">自己受容</span>
+            <div class="mock-bar-track"><div class="mock-bar-fill" style="width:55%"></div></div>
+            <span class="mock-bar-val">55</span>
+          </div>
         </div>
       </div>
-    </section>
 
-    <!-- ========== STAGE 4: 結果 ========== -->
-    <section class="stage hidden" id="stage-result">
+      <p class="preview-note reveal">※ 診断後に実際の結果が表示されます</p>
+    </div>
+  </section>
 
-      <div class="result-wrap">
+  <!-- ============ ⑥ 無料相談案内 ============ -->
+  <section class="lp-section consult-section" id="s-consult">
+    <div class="consult-inner">
+      <p class="section-tag reveal">診断のあとは</p>
+      <h2 class="consult-hl reveal">一人で、<br />抱えなくていい。</h2>
+      <p class="consult-lead reveal">
+        診断結果を持って、<br />初回無料の個別相談へ。
+      </p>
 
-        <!-- ① タイプ名 -->
-        <div class="result-hero reveal-card" id="resultHero">
-          <p class="result-hero-eyebrow">あなたのタイプ</p>
-          <h2 class="result-hero-type" id="resultTypeName"></h2>
-          <span class="result-hero-level" id="resultLevel"></span>
-        </div>
+      <div class="consult-badges reveal">
+        <span class="cbadge">完全オンライン</span>
+        <span class="cbadge">匿名 OK</span>
+        <span class="cbadge">初回無料</span>
+      </div>
 
-        <!-- ② 共感メッセージ（カードなし・読み物） -->
-        <div class="result-empathy reveal-card" id="resultLetter">
-          <div class="letter-ornament">✦</div>
-          <p class="letter-text" id="letterText"></p>
-        </div>
+      <div class="consult-qr reveal">
+        <a href="https://lin.ee/pslrsw7" target="_blank" rel="noopener" class="qr-anchor">
+          <img src="qr.png" alt="LINE 無料個別相談 QRコード" class="consult-qr-img" loading="lazy" />
+        </a>
+        <p class="consult-qr-note">QRコードまたは下のボタンから登録</p>
+      </div>
 
-        <!-- ③ あなたの強み -->
-        <div class="glass-card result-strength reveal-card" id="resultStrength">
-          <p class="result-card-eyebrow">あなたの強み</p>
-          <p class="strength-text" id="strengthText"></p>
-        </div>
+      <a href="https://lin.ee/pslrsw7" class="btn-gold btn-line reveal" target="_blank" rel="noopener">
+        <svg viewBox="0 0 36 36" fill="currentColor" width="22" height="22" aria-hidden="true">
+          <path d="M18 3C9.73 3 3 8.92 3 16.06c0 4.73 2.9 8.88 7.29 11.25.32.17.42.5.32.82l-.82 2.96c-.1.37.3.68.65.5l3.52-1.98c.26-.15.56-.18.83-.1 1.3.36 2.69.56 4.1.56 8.27 0 15-5.92 15-13.01S26.27 3 18 3z"/>
+        </svg>
+        <span>LINEで無料相談する</span>
+      </a>
+    </div>
+  </section>
 
-        <!-- ④ 今の課題 -->
-        <div class="glass-card result-challenge reveal-card" id="resultChallenge">
-          <p class="result-card-eyebrow result-card-eyebrow--soft">今つまずきやすいこと</p>
-          <p class="challenge-text" id="challengeText"></p>
-        </div>
+  <!-- ============ ⑦ 最後のCTA ============ -->
+  <section class="lp-section final-section" id="s-cta">
+    <div class="final-inner">
+      <p class="section-tag reveal">準備はできていますか？</p>
+      <h2 class="final-catch reveal">
+        あなたの人生の主導権を、<br />取り戻す3分間。
+      </h2>
+      <p class="final-sub reveal">
+        まず、自分の「今」を知ることから始めましょう。
+      </p>
+      <a href="diagnosis.html" class="btn-gold btn-large reveal">
+        <span>無料で診断をはじめる</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+      <p class="final-note reveal">所要時間 約3分 &nbsp;·&nbsp; 全20問 &nbsp;·&nbsp; 無料 &nbsp;·&nbsp; 匿名</p>
+    </div>
+  </section>
 
-        <!-- ⑤ 人生の主導権スコア -->
-        <div class="glass-card result-score reveal-card" id="resultScore">
-          <p class="section-eyebrow">人生の主導権スコア</p>
-          <div class="score-wrap">
-            <div class="score-circle">
-              <svg class="score-svg" viewBox="0 0 120 120">
-                <defs>
-                  <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%"   stop-color="#B8960C"/>
-                    <stop offset="50%"  stop-color="#D4AF37"/>
-                    <stop offset="100%" stop-color="#F0D060"/>
-                  </linearGradient>
-                </defs>
-                <circle class="score-ring-bg"   cx="60" cy="60" r="52"/>
-                <circle class="score-ring-fill" cx="60" cy="60" r="52"
-                  id="scoreRingFill"
-                  stroke-dasharray="326.7"
-                  stroke-dashoffset="326.7"/>
-              </svg>
-              <div class="score-num-wrap">
-                <span class="score-num" id="scoreNumber">0</span>
-                <span class="score-unit">点</span>
-              </div>
-            </div>
-            <div class="score-comment" id="scoreComment"></div>
-          </div>
-        </div>
+  <!-- ============ フッター ============ -->
+  <footer class="lp-footer">
+    <div class="footer-inner">
+      <p class="footer-brand">Re:Self Courage</p>
+      <a href="https://www.instagram.com/cou_rage_2024?igsh=MXFhMTV2MWE2N3B6bQ%3D%3D&utm_source=qr"
+         target="_blank" rel="noopener" class="footer-ig">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+        Instagram
+      </a>
+      <p class="footer-copy">© 2024 Re:Self Courage</p>
+    </div>
+  </footer>
 
-        <!-- ⑥ 5つのバランス -->
-        <div class="glass-card result-radar reveal-card">
-          <p class="section-eyebrow">5つのバランス</p>
-          <canvas id="radarChart" width="280" height="260"></canvas>
-          <div class="radar-legend">
-            <span class="legend-item"><span class="ldot l1"></span>自分軸</span>
-            <span class="legend-item"><span class="ldot l2"></span>本音</span>
-            <span class="legend-item"><span class="ldot l3"></span>自己信頼</span>
-            <span class="legend-item"><span class="ldot l4"></span>行動力</span>
-            <span class="legend-item"><span class="ldot l5"></span>自己受容</span>
-          </div>
-        </div>
-
-        <!-- 項目別スコア -->
-        <div class="glass-card result-bars reveal-card">
-          <p class="section-eyebrow">項目別スコア</p>
-          <div id="scoreBars"></div>
-        </div>
-
-        <!-- ⑦ 今日からできる一歩 -->
-        <div class="glass-card result-steps reveal-card">
-          <p class="section-eyebrow">今日からできる、最初の一歩</p>
-          <div id="stepsList"></div>
-        </div>
-
-        <!-- ⑧ 感情ブリッジ（カードなし・詩的） -->
-        <div class="result-bridge reveal-card">
-          <p class="bridge-text" id="bridgeText"></p>
-        </div>
-
-        <!-- ⑨ LINE相談CTA -->
-        <div class="glass-card result-cta reveal-card">
-          <p class="cta-heading">一人で抱えなくていい。</p>
-          <p class="cta-sub" id="ctaSub"></p>
-
-          <div class="qr-area">
-            <a href="https://lin.ee/pslrsw7" target="_blank" rel="noopener" class="qr-link">
-              <img src="qr.png" alt="LINE無料相談 QRコード" class="qr-img" />
-            </a>
-          </div>
-
-          <a href="https://lin.ee/pslrsw7" class="btn-cta" id="ctaBtn" target="_blank" rel="noopener">
-            <span>無料個別相談はこちら</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </a>
-
-          <a href="https://www.instagram.com/cou_rage_2024?igsh=MXFhMTV2MWE2N3B6bQ%3D%3D&utm_source=qr" class="btn-ig" id="igBtn" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18">
-              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-              <circle cx="12" cy="12" r="4"/>
-              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-            </svg>
-            <span>Instagram でフォロー</span>
-          </a>
-
-          <button class="btn-retry" onclick="retryQuiz()">もう一度診断する</button>
-        </div>
-
-      </div><!-- /result-wrap -->
-    </section>
-
-  </div><!-- /app -->
-
-  <script src="script.js"></script>
+  <script src="lp.js"></script>
 </body>
 </html>
