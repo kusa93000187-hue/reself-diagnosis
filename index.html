@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>人生の主導権診断 | Re:Self Courage</title>
+  <meta name="description" content="あなたは、自分の人生を生きていますか？3分・20問で、あなたの現在地が分かります。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <canvas id="bgCanvas"></canvas>
+
+  <div id="app">
+
+    <!-- ========== STAGE 1: オープニング ========== -->
+    <section class="stage" id="stage-opening">
+      <div class="opening-wrap">
+
+        <div class="opening-brand op-anim op-anim-1">
+          <span class="brand-re">Re:</span><span class="brand-self">Self </span><span class="brand-courage">Courage</span>
+        </div>
+
+        <div class="opening-line op-anim op-anim-2"></div>
+
+        <h1 class="opening-title op-anim op-anim-3">
+          人生の<br />主導権診断
+        </h1>
+
+        <p class="opening-catch op-anim op-anim-4">
+          あなたは、<br />自分の人生を<br />生きていますか？
+        </p>
+
+        <p class="opening-desc op-anim op-anim-5">
+          3分・20問で、あなたの現在地が分かります。
+        </p>
+
+        <div class="opening-cta-wrap op-anim op-anim-6">
+          <button class="btn-start" onclick="goToStage('intro')">
+            <span class="btn-start-text">診断をスタートする</span>
+            <span class="btn-start-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </span>
+          </button>
+          <p class="opening-note">全20問・無料・匿名</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========== STAGE 2: 診断説明 ========== -->
+    <section class="stage hidden" id="stage-intro">
+      <div class="glass-card intro-card">
+        <p class="intro-eyebrow">診断について</p>
+        <h2 class="intro-heading">5つの視点で<br />あなたを映し出す</h2>
+        <p class="intro-lead">
+          正直に、直感で答えてください。<br />
+          正解も不正解もありません。
+        </p>
+
+        <div class="intro-cats">
+          <div class="intro-cat">
+            <span class="intro-cat-icon">◈</span>
+            <span class="intro-cat-label">自分軸</span>
+          </div>
+          <div class="intro-cat">
+            <span class="intro-cat-icon">◈</span>
+            <span class="intro-cat-label">本音</span>
+          </div>
+          <div class="intro-cat">
+            <span class="intro-cat-icon">◈</span>
+            <span class="intro-cat-label">自己信頼</span>
+          </div>
+          <div class="intro-cat">
+            <span class="intro-cat-icon">◈</span>
+            <span class="intro-cat-label">行動力</span>
+          </div>
+          <div class="intro-cat">
+            <span class="intro-cat-icon">◈</span>
+            <span class="intro-cat-label">自己受容</span>
+          </div>
+        </div>
+
+        <div class="intro-scale">
+          <p class="intro-scale-title">回答は5段階で選んでください</p>
+          <div class="intro-scale-row">
+            <span class="intro-scale-end">まったく<br />当てはまらない</span>
+            <div class="intro-scale-dots">
+              <span class="intro-scale-dot"></span>
+              <span class="intro-scale-dot"></span>
+              <span class="intro-scale-dot"></span>
+              <span class="intro-scale-dot"></span>
+              <span class="intro-scale-dot"></span>
+            </div>
+            <span class="intro-scale-end">とても<br />当てはまる</span>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="startQuiz()">
+          <span>はじめる</span>
+          <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ========== STAGE 3: 診断（20問） ========== -->
+    <section class="stage hidden" id="stage-quiz">
+      <div class="progress-container">
+        <div class="progress-header">
+          <span class="progress-label">診断中</span>
+          <span class="progress-count" id="progressCount">1 / 20</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressBar" style="width:5%"></div>
+        </div>
+      </div>
+
+      <div class="question-wrapper">
+        <div class="glass-card question-card" id="questionCard">
+          <button class="btn-prev" id="btnPrev" onclick="goToPrevQuestion()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            <span>前の質問</span>
+          </button>
+          <div class="q-category" id="questionCategory">自分軸</div>
+          <p class="q-text" id="questionText">質問テキスト</p>
+          <div class="answer-opts" id="answerOptions">
+            <button class="answer-btn" data-value="1" onclick="selectAnswer(1)">
+              <span class="ans-dot"></span>
+              <span class="ans-label">まったく<br />当てはまらない</span>
+            </button>
+            <button class="answer-btn" data-value="2" onclick="selectAnswer(2)">
+              <span class="ans-dot"></span>
+              <span class="ans-label">あまり<br />当てはまらない</span>
+            </button>
+            <button class="answer-btn" data-value="3" onclick="selectAnswer(3)">
+              <span class="ans-dot"></span>
+              <span class="ans-label">どちらとも<br />いえない</span>
+            </button>
+            <button class="answer-btn" data-value="4" onclick="selectAnswer(4)">
+              <span class="ans-dot"></span>
+              <span class="ans-label">やや<br />当てはまる</span>
+            </button>
+            <button class="answer-btn" data-value="5" onclick="selectAnswer(5)">
+              <span class="ans-dot"></span>
+              <span class="ans-label">とても<br />当てはまる</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== STAGE 3.5: 分析中 ========== -->
+    <section class="stage hidden" id="stage-analyzing">
+      <div class="analyzing-wrap">
+        <div class="analyzing-ring-wrap">
+          <div class="analyzing-ring"></div>
+          <div class="analyzing-ring-2"></div>
+          <div class="analyzing-dot"></div>
+        </div>
+        <p class="analyzing-msg" id="analyzingMsg">あなたの回答を分析しています</p>
+        <div class="analyzing-progress">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== STAGE 4: 結果 ========== -->
+    <section class="stage hidden" id="stage-result">
+
+      <div class="result-wrap">
+
+        <!-- ① タイプ名 -->
+        <div class="result-hero reveal-card" id="resultHero">
+          <p class="result-hero-eyebrow">あなたのタイプ</p>
+          <h2 class="result-hero-type" id="resultTypeName"></h2>
+          <span class="result-hero-level" id="resultLevel"></span>
+        </div>
+
+        <!-- ② 共感メッセージ（カードなし・読み物） -->
+        <div class="result-empathy reveal-card" id="resultLetter">
+          <div class="letter-ornament">✦</div>
+          <p class="letter-text" id="letterText"></p>
+        </div>
+
+        <!-- ③ あなたの強み -->
+        <div class="glass-card result-strength reveal-card" id="resultStrength">
+          <p class="result-card-eyebrow">あなたの強み</p>
+          <p class="strength-text" id="strengthText"></p>
+        </div>
+
+        <!-- ④ 今の課題 -->
+        <div class="glass-card result-challenge reveal-card" id="resultChallenge">
+          <p class="result-card-eyebrow result-card-eyebrow--soft">今つまずきやすいこと</p>
+          <p class="challenge-text" id="challengeText"></p>
+        </div>
+
+        <!-- ⑤ 人生の主導権スコア -->
+        <div class="glass-card result-score reveal-card" id="resultScore">
+          <p class="section-eyebrow">人生の主導権スコア</p>
+          <div class="score-wrap">
+            <div class="score-circle">
+              <svg class="score-svg" viewBox="0 0 120 120">
+                <defs>
+                  <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%"   stop-color="#B8960C"/>
+                    <stop offset="50%"  stop-color="#D4AF37"/>
+                    <stop offset="100%" stop-color="#F0D060"/>
+                  </linearGradient>
+                </defs>
+                <circle class="score-ring-bg"   cx="60" cy="60" r="52"/>
+                <circle class="score-ring-fill" cx="60" cy="60" r="52"
+                  id="scoreRingFill"
+                  stroke-dasharray="326.7"
+                  stroke-dashoffset="326.7"/>
+              </svg>
+              <div class="score-num-wrap">
+                <span class="score-num" id="scoreNumber">0</span>
+                <span class="score-unit">点</span>
+              </div>
+            </div>
+            <div class="score-comment" id="scoreComment"></div>
+          </div>
+        </div>
+
+        <!-- ⑥ 5つのバランス -->
+        <div class="glass-card result-radar reveal-card">
+          <p class="section-eyebrow">5つのバランス</p>
+          <canvas id="radarChart" width="280" height="260"></canvas>
+          <div class="radar-legend">
+            <span class="legend-item"><span class="ldot l1"></span>自分軸</span>
+            <span class="legend-item"><span class="ldot l2"></span>本音</span>
+            <span class="legend-item"><span class="ldot l3"></span>自己信頼</span>
+            <span class="legend-item"><span class="ldot l4"></span>行動力</span>
+            <span class="legend-item"><span class="ldot l5"></span>自己受容</span>
+          </div>
+        </div>
+
+        <!-- 項目別スコア -->
+        <div class="glass-card result-bars reveal-card">
+          <p class="section-eyebrow">項目別スコア</p>
+          <div id="scoreBars"></div>
+        </div>
+
+        <!-- ⑦ 今日からできる一歩 -->
+        <div class="glass-card result-steps reveal-card">
+          <p class="section-eyebrow">今日からできる、最初の一歩</p>
+          <div id="stepsList"></div>
+        </div>
+
+        <!-- ⑧ 感情ブリッジ（カードなし・詩的） -->
+        <div class="result-bridge reveal-card">
+          <p class="bridge-text" id="bridgeText"></p>
+        </div>
+
+        <!-- ⑨ LINE相談CTA -->
+        <div class="glass-card result-cta reveal-card">
+          <p class="cta-heading">一人で抱えなくていい。</p>
+          <p class="cta-sub" id="ctaSub"></p>
+
+          <div class="qr-area">
+            <a href="https://lin.ee/pslrsw7" target="_blank" rel="noopener" class="qr-link">
+              <img src="qr.png" alt="LINE無料相談 QRコード" class="qr-img" />
+            </a>
+          </div>
+
+          <a href="https://lin.ee/pslrsw7" class="btn-cta" id="ctaBtn" target="_blank" rel="noopener">
+            <span>無料個別相談はこちら</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+
+          <a href="https://www.instagram.com/cou_rage_2024?igsh=MXFhMTV2MWE2N3B6bQ%3D%3D&utm_source=qr" class="btn-ig" id="igBtn" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+            </svg>
+            <span>Instagram でフォロー</span>
+          </a>
+
+          <button class="btn-retry" onclick="retryQuiz()">もう一度診断する</button>
+        </div>
+
+      </div><!-- /result-wrap -->
+    </section>
+
+  </div><!-- /app -->
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,1772 @@
+/* ============================================================
+   Re:Self Courage — 人生の主導権診断 LP
+   lp.css
+   ============================================================ */
+
+/* ---------- リセット & カスタムプロパティ ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:       #D4AF37;
+  --gold-light: #F0D060;
+  --gold-dark:  #B8960C;
+  --pink:       #F2A7C3;
+  --white:      #FFFFFF;
+  --w90: rgba(255,255,255,0.90);
+  --w80: rgba(255,255,255,0.80);
+  --w70: rgba(255,255,255,0.70);
+  --w60: rgba(255,255,255,0.60);
+  --w40: rgba(255,255,255,0.40);
+  --w20: rgba(255,255,255,0.20);
+  --w12: rgba(255,255,255,0.12);
+  --w08: rgba(255,255,255,0.08);
+
+  /* ガラスカード — 写真背景に映えるゴールドガラス仕様 */
+  --glass-bg:     linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.07) 100%);
+  --glass-bd:     rgba(212,175,55,0.35);
+  --glass-blur:   blur(40px) saturate(2.0);
+  --glass-shadow:
+    0 0 0 1px rgba(212,175,55,0.12),
+    0 20px 64px rgba(0,0,0,0.45),
+    0 4px 16px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.32),
+    inset 0 -1px 0 rgba(212,175,55,0.12),
+    inset 0 0 120px rgba(212,175,55,0.032);
+
+  --font-serif: 'Noto Serif JP', 'Yu Mincho', serif;
+  --font-sans:  'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif;
+
+  --radius:     26px;
+  --radius-sm:  14px;
+  --radius-pill: 999px;
+  --ease-expo:  cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: #04010e;  /* #bgDawn が描く夜明けグラデーションのフォールバック */
+  min-height: 100vh;
+  color: var(--white);
+  overflow-x: hidden;
+}
+
+/* ---------- 夜明けグラデーション背景（JS で更新） ---------- */
+#bgDawn {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;   /* キャンバス(0・後DOM)の下、body の上 */
+  background: linear-gradient(
+    to bottom,
+    rgb(6,2,26)  0%,
+    rgb(14,5,40) 30%,
+    rgb(24,8,56) 65%,
+    rgb(14,5,30) 100%
+  );
+}
+
+/* ---------- 夜空キャンバス（fixed） ---------- */
+#lpCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---------- ガラスカード（高級ゴールドガラス） ---------- */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-bd);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow);
+  transition: border-color 0.30s ease, box-shadow 0.30s ease, transform 0.30s var(--ease-expo);
+}
+
+/* ---------- レイアウト共通 ---------- */
+.lp-section {
+  position: relative;
+  z-index: 1;
+  padding: 108px 24px;
+  overflow: hidden;  /* 背景画像・パララックスレイヤーをクリップ */
+}
+
+/* 全セクション共通オーバーレイ（::before で背景画像の上に重ねる） */
+.lp-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.lp-container {
+  max-width: 490px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;  /* ::before オーバーレイより前面 */
+}
+
+/* ---------- テキストユーティリティ ---------- */
+.text-gold { color: var(--gold-light); }
+
+/* ============================================================
+   スティッキーヘッダー
+   ============================================================ */
+.lp-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: rgba(8, 2, 20, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--w12);
+  transform: translateY(-100%);
+  transition: transform 0.45s var(--ease-expo);
+}
+
+.lp-header.visible { transform: translateY(0); }
+
+.header-brand {
+  font-family: var(--font-serif);
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+}
+.hb-re, .hb-courage { color: var(--gold); }
+.hb-self { color: var(--w80); }
+
+.header-btn {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 22px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.10em;
+  color: #0a0520;
+  background: linear-gradient(
+    to bottom,
+    #F0DC65 0%,
+    #E0C030 20%,
+    #D4AF37 55%,
+    #C49A15 100%
+  );
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  transition: filter 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+  box-shadow:
+    0 2px 0 rgba(0,0,0,0.20),
+    0 4px 16px rgba(212,175,55,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.50),
+    inset 0 -1px 0 rgba(0,0,0,0.12);
+}
+.header-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -120%;
+  width: 70%; height: 100%;
+  background: linear-gradient(105deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.32) 50%, rgba(255,255,255,0) 100%);
+  transition: left 0.45s ease;
+  pointer-events: none;
+}
+.header-btn:hover {
+  filter: brightness(1.10);
+  transform: translateY(-1px);
+  box-shadow:
+    0 2px 0 rgba(0,0,0,0.16),
+    0 8px 24px rgba(212,175,55,0.62),
+    inset 0 1px 0 rgba(255,255,255,0.60),
+    inset 0 -1px 0 rgba(0,0,0,0.10);
+}
+.header-btn:hover::before { left: 130%; }
+
+/* ============================================================
+   ① ファーストビュー
+   ============================================================ */
+.fv-section {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 28px 80px;
+  text-align: center;
+  overflow: hidden;  /* parallax layer をクリップ */
+}
+
+/* グラデーションオーバーレイ */
+.fv-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(4,1,14,0.82)  0%,
+    rgba(4,1,14,0.45) 28%,
+    rgba(4,1,14,0.35) 50%,
+    rgba(4,1,14,0.50) 72%,
+    rgba(4,1,14,0.88) 100%
+  );
+}
+
+/* パララックス背景レイヤー（JS で translateY を更新） */
+.fv-parallax-layer {
+  position: absolute;
+  inset: -25% 0;
+  background: url('images/hero.png') center 35% / cover no-repeat;
+  will-change: transform;
+  z-index: 0;
+}
+
+/* セクション内パララックス背景（about など） */
+.section-parallax-bg {
+  position: absolute;
+  inset: -25% 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center 40%;
+  will-change: transform;
+  z-index: -1;  /* ::before オーバーレイの下 */
+}
+
+.fv-inner {
+  position: relative;
+  z-index: 2;        /* parallax layer(0) + overlay(1) より前面 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  max-width: 440px;
+}
+
+/* FV ブランド */
+.fv-brand {
+  font-family: var(--font-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.28em;
+  color: var(--gold-light);
+  margin-bottom: 20px;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.70);
+}
+
+/* FV ルール */
+.fv-rule {
+  width: 64px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+  margin-bottom: 36px;
+  box-shadow: 0 0 10px rgba(212,175,55,0.45);
+}
+
+/* FV キャッチコピー */
+.fv-catch {
+  font-family: var(--font-serif);
+  font-size: 2.0rem;
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: 0.08em;
+  color: var(--white);
+  text-shadow:
+    0 2px 40px rgba(212,175,55,0.50),
+    0 1px 12px rgba(0,0,0,0.90);  /* 画像背景でも確実に読める黒シャドウ */
+  margin-bottom: 24px;
+}
+
+/* FV サブコピー */
+.fv-sub {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 300;
+  line-height: 1.95;
+  color: var(--w90);
+  letter-spacing: 0.08em;
+  margin-bottom: 36px;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.80);
+}
+
+/* FV ノート */
+.fv-note {
+  font-size: 0.72rem;
+  letter-spacing: 0.10em;
+  color: rgba(255,255,255,0.55);
+  margin-top: 14px;
+  margin-bottom: 44px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.70);
+}
+
+/* スクロールヒント */
+.scroll-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.scroll-bar {
+  width: 1px;
+  height: 44px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: scrollDrop 2s ease-in-out infinite;
+}
+
+.scroll-label {
+  font-size: 0.60rem;
+  letter-spacing: 0.22em;
+  color: var(--gold-light);
+}
+
+@keyframes scrollDrop {
+  0%   { transform: scaleY(0); transform-origin: top; opacity: 0; }
+  40%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+  80%  { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
+  100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+}
+
+/* FV stagger アニメーション */
+.fv-s1, .fv-s2, .fv-s3, .fv-s4, .fv-s5, .fv-s6, .fv-s7 {
+  opacity: 0;
+  transform: translateY(22px);
+  animation: fvFloat 0.85s var(--ease-expo) both;
+}
+.fv-s1 { animation-delay: 0.08s; }
+.fv-s2 { animation-delay: 0.20s; }
+.fv-s3 { animation-delay: 0.34s; }
+.fv-s4 { animation-delay: 0.50s; }
+.fv-s5 { animation-delay: 0.65s; }
+.fv-s6 { animation-delay: 0.78s; }
+.fv-s7 { animation-delay: 0.94s; }
+
+@keyframes fvFloat {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   セクション共通テキスト
+   ============================================================ */
+.section-tag {
+  display: inline-block;
+  font-size: 0.70rem;
+  letter-spacing: 0.22em;
+  color: var(--gold-light);
+  background: rgba(212,175,55,0.12);
+  border: 1px solid rgba(212,175,55,0.38);
+  border-radius: var(--radius-pill);
+  padding: 6px 18px;
+  margin-bottom: 22px;
+  text-shadow: 0 0 12px rgba(212,175,55,0.60);
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: 1.80rem;
+  font-weight: 500;
+  line-height: 1.52;
+  letter-spacing: 0.06em;
+  color: var(--white);
+  text-shadow:
+    0 2px 32px rgba(212,175,55,0.40),
+    0 1px 16px rgba(0,0,0,0.85);
+  margin-bottom: 44px;
+}
+
+/* スクロール reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  will-change: opacity, transform;
+  transition: opacity 1.2s var(--ease-expo), transform 1.2s var(--ease-expo);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   ② 共感セクション（夜に悩む女性 / night.png）
+   ============================================================ */
+.empathy-section {
+  text-align: center;
+  background: url('images/night.png') center 25% / cover no-repeat;
+}
+.empathy-section::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(2,0,10,0.85) 0%,
+    rgba(2,0,10,0.68) 45%,
+    rgba(2,0,10,0.80) 100%
+  );
+}
+
+.empathy-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.empathy-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 24px;
+  text-align: left;
+  /* 左側ゴールドアクセントライン */
+  border-left: 2px solid rgba(212,175,55,0.55);
+}
+.empathy-card:hover {
+  transform: translateX(4px);
+  border-left-color: rgba(212,175,55,0.90);
+  box-shadow:
+    0 0 0 1px rgba(212,175,55,0.14),
+    0 16px 48px rgba(0,0,0,0.40),
+    inset 0 1px 0 rgba(255,255,255,0.30),
+    inset 0 0 100px rgba(212,175,55,0.045);
+}
+
+.e-diamond {
+  font-size: 0.75rem;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.e-text {
+  font-size: 0.92rem;
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--w80);
+  letter-spacing: 0.03em;
+}
+
+.empathy-close {
+  padding: 28px 24px;
+  text-align: center;
+}
+
+.ec-text {
+  font-family: var(--font-serif);
+  font-size: 1.0rem;
+  font-weight: 400;
+  line-height: 2.0;
+  color: var(--w80);
+  letter-spacing: 0.05em;
+}
+
+/* ============================================================
+   ③ 人生の主導権とは？（光を浴びる女性 / light.png — JS パララックス）
+   ============================================================ */
+.about-section {
+  text-align: center;
+  /* 背景画像は JS で動かす .section-parallax-bg に委任 */
+}
+.about-section::before {
+  z-index: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(4,1,14,0.72) 0%,
+    rgba(4,1,14,0.36) 48%,
+    rgba(4,1,14,0.58) 100%
+  );
+}
+/* about セクション内パララックス */
+#aboutBg {
+  background-image: url('images/light.png');
+  background-position: center 35%;
+}
+
+.about-card {
+  padding: 36px 28px;
+  margin-bottom: 32px;
+}
+
+.about-main {
+  font-family: var(--font-serif);
+  font-size: 1.08rem;
+  font-weight: 400;
+  line-height: 1.95;
+  letter-spacing: 0.05em;
+  color: var(--w90);
+  margin-bottom: 20px;
+}
+
+.about-rule {
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 0 auto 20px;
+}
+
+.about-sub {
+  font-size: 0.86rem;
+  font-weight: 300;
+  line-height: 2.0;
+  color: var(--w80);
+  letter-spacing: 0.04em;
+}
+
+/* タイムライン */
+.timeline-wrap {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-bd);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow);
+  padding: 30px 20px 26px;
+}
+
+.tl-heading {
+  font-size: 0.70rem;
+  letter-spacing: 0.14em;
+  color: var(--gold-light);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.timeline {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0 8px;
+}
+
+.tl-line-bg {
+  position: absolute;
+  top: 11px;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, #1a0a30, var(--gold), #F5D89A, var(--white));
+  z-index: 0;
+}
+
+.tl-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.tl-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.30);
+  flex-shrink: 0;
+}
+.tl-d1 { background: #2d1245; border-color: rgba(212,175,55,0.4); }
+.tl-d2 { background: linear-gradient(135deg, #7b3468, #c0614a); border-color: rgba(212,175,55,0.6); }
+.tl-d3 { background: linear-gradient(135deg, #e8944a, #F5D89A); border-color: var(--gold); }
+.tl-d4 { background: linear-gradient(135deg, var(--gold), var(--gold-light)); border-color: var(--gold-light); }
+
+.tl-stage {
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--gold-light);
+  text-align: center;
+}
+
+.tl-desc {
+  font-size: 0.70rem;
+  line-height: 1.6;
+  color: var(--w70);
+  text-align: center;
+}
+
+/* ============================================================
+   ④ 診断で分かること（海辺を歩く / walk.png）
+   ============================================================ */
+.features-section {
+  text-align: center;
+  background: url('images/walk.png') center 18% / cover no-repeat;
+}
+.features-section::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(3,1,12,0.78) 0%,
+    rgba(3,1,12,0.62) 50%,
+    rgba(3,1,12,0.72) 100%
+  );
+}
+
+.features-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.feature-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px 26px;
+  text-align: left;
+  /* transitionは .glass-card 側で管理 */
+}
+.feature-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(212,175,55,0.55);
+  box-shadow:
+    0 0 0 1px rgba(212,175,55,0.18),
+    0 22px 64px rgba(0,0,0,0.42),
+    0 4px 12px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.32),
+    inset 0 -1px 0 rgba(212,175,55,0.14),
+    0 0 48px rgba(212,175,55,0.07);   /* 外周ゴールドグロウ */
+}
+
+.feat-icon {
+  flex-shrink: 0;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(212,175,55,0.10), rgba(212,175,55,0.03));
+  border: 1px solid rgba(212,175,55,0.28);
+  border-radius: 50%;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 0 16px rgba(212,175,55,0.06);
+}
+
+.feat-num {
+  font-size: 0.62rem;
+  letter-spacing: 0.10em;
+  color: var(--gold-light);
+  margin-bottom: 3px;
+}
+
+.feat-name {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--white);
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.feat-desc {
+  font-size: 0.82rem;
+  font-weight: 300;
+  line-height: 1.70;
+  color: var(--w70);
+}
+
+/* ============================================================
+   ⑤ 診断結果イメージ（walk.png 中景：少し明るめ）
+   ============================================================ */
+.preview-section {
+  text-align: center;
+  background: url('images/walk.png') center 40% / cover no-repeat;
+}
+.preview-section::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(3,1,12,0.72) 0%,
+    rgba(3,1,12,0.52) 50%,
+    rgba(3,1,12,0.62) 100%
+  );
+}
+
+.preview-lead {
+  font-size: 0.84rem;
+  font-weight: 300;
+  line-height: 1.95;
+  color: var(--w80);
+  margin-bottom: 28px;
+  letter-spacing: 0.04em;
+}
+
+.preview-frame {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-bd);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow);
+  padding: 32px 28px;
+  margin-bottom: 14px;
+  /* float は reveal 完了後に起動（1.3s delay で競合を回避） */
+}
+.preview-frame.visible {
+  animation: float 4s ease-in-out 1.3s infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+/* スクリーンショット差し替え用 */
+.preview-screenshot {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  display: block;
+}
+
+/* モックUI */
+.result-mock { text-align: left; }
+
+.mock-eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  color: var(--gold-light);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.mock-type {
+  font-family: var(--font-serif);
+  font-size: 1.40rem;
+  font-weight: 500;
+  color: var(--white);
+  text-align: center;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 16px rgba(212,175,55,0.40);
+}
+
+.mock-lv {
+  display: block;
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: #1a0a2e;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  border-radius: var(--radius-pill);
+  padding: 3px 16px;
+  width: fit-content;
+  margin: 0 auto 20px;
+}
+
+.mock-score-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--w12);
+}
+
+.mock-ring {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 5px solid var(--gold);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 16px rgba(212,175,55,0.35);
+}
+
+.mock-score-num {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--white);
+}
+
+.mock-score-unit {
+  font-size: 0.65rem;
+  color: var(--w60);
+}
+
+.mock-score-label {
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--w80);
+}
+
+.mock-bars { margin-bottom: 18px; }
+
+.mock-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 9px;
+}
+
+.mock-bar-name {
+  font-size: 0.72rem;
+  color: var(--w80);
+  min-width: 52px;
+}
+
+.mock-bar-track {
+  flex: 1;
+  height: 4px;
+  background: var(--w12);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.mock-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold-light));
+  border-radius: var(--radius-pill);
+  box-shadow: 0 0 6px rgba(212,175,55,0.40);
+}
+
+.mock-bar-val {
+  font-size: 0.68rem;
+  color: var(--gold-light);
+  min-width: 22px;
+  text-align: right;
+}
+
+.mock-message {
+  font-family: var(--font-serif);
+  font-size: 0.82rem;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--w80);
+  text-align: center;
+  letter-spacing: 0.04em;
+  padding-top: 14px;
+  border-top: 1px solid var(--w12);
+}
+
+.preview-note {
+  font-size: 0.68rem;
+  color: var(--w40);
+  letter-spacing: 0.06em;
+}
+
+/* ============================================================
+   ⑥ 無料相談案内（walk.png 遠景：朝日へ向かう）
+   ============================================================ */
+.consult-section {
+  text-align: center;
+  background: url('images/walk.png') center 60% / cover no-repeat;
+}
+.consult-section::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(5,2,14,0.68) 0%,
+    rgba(5,2,14,0.45) 50%,
+    rgba(5,2,14,0.55) 100%
+  );
+}
+
+/* 無料相談コンテナをガラスパネルとして表示 */
+.consult-section .lp-container {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-bd);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow);
+  padding: 48px 24px 44px;  /* mobile: 側面は狭く */
+}
+
+/* consult・final ボタンは全幅で押しやすく */
+.consult-inner .btn-gold,
+.final-inner .btn-gold {
+  width: 100%;
+}
+
+.consult-lead {
+  font-family: var(--font-serif);
+  font-size: 1.0rem;
+  font-weight: 300;
+  line-height: 1.95;
+  color: var(--w80);
+  letter-spacing: 0.05em;
+  margin-bottom: 32px;
+}
+
+.consult-feats {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 36px;
+}
+
+.cf-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.cf-icon {
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(212,175,55,0.04));
+  border: 1px solid rgba(212,175,55,0.32);
+  border-radius: 50%;
+  color: var(--gold-light);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.22),
+    0 0 20px rgba(212,175,55,0.08);
+}
+
+.cf-label {
+  font-size: 0.74rem;
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--w80);
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.consult-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.qr-anchor {
+  display: block;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.30);
+  transition: transform 0.25s var(--ease-expo);
+}
+.qr-anchor:hover { transform: translateY(-2px); }
+
+.consult-qr-img {
+  display: block;
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  background: #fff;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+}
+
+.consult-qr-note {
+  font-size: 0.74rem;
+  color: var(--w60);
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+}
+
+/* ============================================================
+   ⑦ 最後のCTA（両手を広げる女性 / cta.png — 最も明るく希望に満ちた世界観）
+   ============================================================ */
+.final-section {
+  text-align: center;
+  padding-bottom: 120px;
+  background: url('images/cta.png') center 28% / cover no-repeat;
+}
+.final-section::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(4,1,14,0.68) 0%,
+    rgba(4,1,14,0.24) 42%,
+    rgba(4,1,14,0.14) 65%,
+    rgba(4,1,14,0.42) 100%
+  );
+}
+
+/* 最後のCTAコンテナ（背景写真に直接テキストを配置） */
+.final-inner {
+  max-width: 490px;
+  margin: 0 auto;
+  padding: 0 8px;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+/* 最終CTAパネルの上品な金色呼吸 */
+@keyframes panelGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(212,175,55,0.09),
+      0 16px 56px rgba(0,0,0,0.38),
+      0 4px 12px rgba(0,0,0,0.18),
+      inset 0 1px 0 rgba(255,255,255,0.26),
+      inset 0 -1px 0 rgba(212,175,55,0.10),
+      inset 0 0 100px rgba(212,175,55,0.028),
+      0 0 0px rgba(212,175,55,0);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(212,175,55,0.16),
+      0 20px 70px rgba(0,0,0,0.42),
+      0 4px 12px rgba(0,0,0,0.18),
+      inset 0 1px 0 rgba(255,255,255,0.30),
+      inset 0 -1px 0 rgba(212,175,55,0.16),
+      inset 0 0 100px rgba(212,175,55,0.050),
+      0 0 64px rgba(212,175,55,0.22);
+  }
+}
+
+.final-deco {
+  font-size: 2.6rem;
+  margin-bottom: 20px;
+  animation: rise 1.2s var(--ease-expo) both;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.final-tag {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  color: var(--gold-light);
+  margin-bottom: 16px;
+  display: block;
+}
+
+.final-catch {
+  font-family: var(--font-serif);
+  font-size: 1.70rem;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  text-shadow: 0 2px 28px rgba(212,175,55,0.45);
+  margin-bottom: 20px;
+}
+
+.final-sub {
+  font-size: 0.86rem;
+  font-weight: 300;
+  line-height: 2.0;
+  color: var(--w80);
+  letter-spacing: 0.04em;
+  margin-bottom: 36px;
+}
+
+.final-note {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--w40);
+  margin-top: 14px;
+}
+
+/* ============================================================
+   ボタン — 高級ゴールドボタン
+   ============================================================ */
+
+/*
+  グラデーション設計：上から光が当たる立体感
+  最上部（ハイライト）→ 明るいゴールド → 標準ゴールド → 深みのある底面
+*/
+.btn-gold {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 58px;          /* スマホでも押しやすい高さ */
+  padding: 0 44px;
+  background: linear-gradient(
+    to bottom,
+    #F5E070 0%,              /* 最上部ハイライト */
+    #E8C842 15%,             /* 明るいゴールド */
+    #D4AF37 50%,             /* 基準ゴールド */
+    #C49A15 82%,             /* 深みある底面 */
+    #B08C0A 100%             /* 最底部 */
+  );
+  color: #120B1F;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-serif);
+  font-size: 0.96rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;          /* shimmerをボタン内にクリップ */
+  transition:
+    transform 0.30s var(--ease-expo),
+    box-shadow 0.30s ease,
+    filter 0.25s ease;
+  box-shadow:
+    /* 立体感：底面エッジ */
+    0 2px 0 rgba(0,0,0,0.24),
+    /* 外周ゴールド光彩 */
+    0 8px 36px rgba(212,175,55,0.60),
+    0 2px 8px  rgba(0,0,0,0.20),
+    /* 上面インナーハイライト（金属光沢） */
+    inset 0 1px 0 rgba(255,255,255,0.55),
+    /* 底面インナーシャドウ */
+    inset 0 -1px 0 rgba(0,0,0,0.16),
+    /* 内側縁取り */
+    inset 0 0 0 1px rgba(255,255,255,0.14);
+}
+
+/* shimmer sweep：hover時に光が走る */
+.btn-gold::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -130%;
+  width: 75%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    rgba(255,255,255,0.00) 0%,
+    rgba(255,255,255,0.36) 50%,
+    rgba(255,255,255,0.00) 100%
+  );
+  transition: left 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.btn-gold:hover {
+  filter: brightness(1.10);        /* 全体を明るく */
+  transform: translateY(-3px);
+  box-shadow:
+    0 2px 0 rgba(0,0,0,0.20),
+    0 16px 52px rgba(212,175,55,0.75),  /* 光彩を強く */
+    0 4px 12px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.65),
+    inset 0 -1px 0 rgba(0,0,0,0.12),
+    inset 0 0 0 1px rgba(255,255,255,0.20);
+}
+
+.btn-gold:hover::before {
+  left: 140%;                       /* shimmerがボタンを通過 */
+}
+
+.btn-gold:active {
+  transform: translateY(1px) scale(0.99);
+  filter: brightness(0.95);
+  box-shadow:
+    0 0 0 rgba(0,0,0,0.20),
+    0 4px 18px rgba(212,175,55,0.50),
+    inset 0 1px 0 rgba(255,255,255,0.35),
+    inset 0 2px 5px rgba(0,0,0,0.18);
+}
+
+/* 大きいCTAボタン（最終セクション・FV） */
+.btn-large {
+  min-height: 64px;
+  padding: 0 58px;
+  font-size: 1.02rem;
+  letter-spacing: 0.14em;
+}
+
+/* LINEボタン */
+.btn-line {
+  min-height: 56px;
+  padding: 0 38px;
+  font-size: 0.92rem;
+  letter-spacing: 0.10em;
+}
+
+/* ============================================================
+   フッター
+   ============================================================ */
+.lp-footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--w12);
+  padding: 32px 20px;
+}
+
+.footer-inner {
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.footer-brand {
+  font-family: var(--font-serif);
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  color: var(--gold-light);
+}
+
+.footer-ig {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  color: var(--w60);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  transition: color 0.20s ease;
+}
+.footer-ig:hover { color: var(--pink); }
+
+.footer-copy {
+  font-size: 0.68rem;
+  color: var(--w40);
+  letter-spacing: 0.06em;
+}
+
+/* ============================================================
+   レスポンシブ
+   ============================================================ */
+/* ============================================================
+   レスポンシブ
+   ============================================================ */
+
+/* --- 375px 以下（極小スマホ） --- */
+@media (max-width: 374px) {
+  .lp-section    { padding: 88px 18px; }
+  .fv-catch      { font-size: 1.78rem; }
+  .section-title { font-size: 1.60rem; }
+  .final-catch   { font-size: 1.52rem; }
+  .consult-hl    { font-size: 1.80rem; }
+  .em-line       { font-size: 1.02rem; }
+}
+
+/* --- 480px 以上（大きめスマホ） --- */
+@media (min-width: 480px) {
+  .fv-catch      { font-size: 2.4rem; }
+  .section-title { font-size: 2.0rem; }
+  .final-catch   { font-size: 2.0rem; }
+  .consult-hl    { font-size: 2.4rem; }
+  .aq-main       { font-size: 1.55rem; }
+
+  .consult-inner .btn-gold,
+  .final-inner .btn-gold { width: auto; min-width: 68%; }
+}
+
+/* --- 768px 以上（タブレット・PC） --- */
+@media (min-width: 768px) {
+  .lp-section    { padding: 128px 48px; }
+  .lp-container  { max-width: 580px; }
+  .em-inner, .about-inner, .feat-inner,
+  .preview-inner, .consult-inner, .final-inner { max-width: 580px; }
+
+  .fv-catch      { font-size: 2.8rem; }
+  .section-title { font-size: 2.2rem; }
+  .final-catch   { font-size: 2.2rem; }
+  .consult-hl    { font-size: 2.6rem; }
+  .aq-main       { font-size: 1.65rem; }
+  .em-line       { font-size: 1.28rem; }
+
+  .feat-list     { max-width: 480px; margin-left: auto; margin-right: auto; }
+
+  /* タブレット以上では背景画像の見せ方を最適化 */
+  .empathy-section  { background-position: center 20%; }
+  .about-section    { background-position: center 30%; }
+  .features-section { background-position: center 25%; }
+  .preview-section  { background-position: center 35%; }
+  .consult-section  { background-position: center 55%; }
+  .final-section    { background-position: center 22%; }
+}
+
+/* ============================================================
+   ② 共感セクション（映画的コピー直書き）
+   ============================================================ */
+.em-inner {
+  max-width: 490px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.em-lines {
+  margin: 60px 0 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+}
+
+.em-line {
+  font-family: var(--font-serif);
+  font-size: 1.18rem;
+  font-weight: 400;
+  line-height: 1.85;
+  color: var(--w90);
+  letter-spacing: 0.06em;
+  text-shadow:
+    0 2px 28px rgba(0,0,0,0.96),
+    0 1px 8px  rgba(0,0,0,0.80);
+}
+
+.em-divider {
+  width: 48px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+  margin: 0 auto 56px;
+  box-shadow: 0 0 10px rgba(212,175,55,0.45);
+}
+
+.em-close {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  line-height: 2.2;
+  color: var(--w80);
+  letter-spacing: 0.06em;
+  text-shadow: 0 2px 22px rgba(0,0,0,0.92);
+}
+
+/* ============================================================
+   ③ 人生の主導権とは（ミニマルクォート）
+   ============================================================ */
+.about-inner {
+  max-width: 490px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.aq-main {
+  font-family: var(--font-serif);
+  font-size: 1.38rem;
+  font-weight: 500;
+  line-height: 2.0;
+  letter-spacing: 0.07em;
+  color: var(--white);
+  text-shadow:
+    0 2px 36px rgba(0,0,0,0.88),
+    0 1px 12px rgba(0,0,0,0.72);
+  margin: 52px 0 0;
+}
+
+.aq-rule {
+  width: 56px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+  margin: 48px auto;
+  box-shadow: 0 0 12px rgba(212,175,55,0.50);
+}
+
+.aq-sub {
+  font-family: var(--font-serif);
+  font-size: 1.0rem;
+  font-weight: 300;
+  line-height: 2.1;
+  color: var(--w70);
+  letter-spacing: 0.08em;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.90);
+}
+
+/* ============================================================
+   ④ 5つの視点（ミニマルナンバーリスト）
+   ============================================================ */
+.feat-inner {
+  max-width: 490px;
+  margin: 0 auto;
+  padding: 0 8px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.feat-list {
+  list-style: none;
+  margin-top: 48px;
+  text-align: left;
+}
+
+.fl-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 22px;
+  padding: 24px 0;
+  border-bottom: 1px solid rgba(212,175,55,0.16);
+  transition: padding-left 0.28s var(--ease-expo);
+}
+.fl-item:first-child {
+  border-top: 1px solid rgba(212,175,55,0.16);
+}
+.fl-item:hover { padding-left: 6px; }
+
+.fl-num {
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  color: var(--gold-light);
+  flex-shrink: 0;
+  padding-top: 5px;
+  min-width: 22px;
+  text-shadow: 0 0 10px rgba(212,175,55,0.55);
+}
+
+.fl-body { flex: 1; }
+
+.fl-name {
+  font-family: var(--font-serif);
+  font-size: 1.10rem;
+  font-weight: 500;
+  color: var(--white);
+  letter-spacing: 0.05em;
+  margin-bottom: 5px;
+  text-shadow: 0 1px 16px rgba(0,0,0,0.88);
+}
+
+.fl-desc {
+  font-size: 0.82rem;
+  font-weight: 300;
+  color: var(--w70);
+  line-height: 1.65;
+  letter-spacing: 0.03em;
+  text-shadow: 0 1px 10px rgba(0,0,0,0.80);
+}
+
+/* ============================================================
+   ⑤ 診断結果イメージ（控えめカード）
+   ============================================================ */
+.preview-inner {
+  max-width: 490px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.preview-showcase {
+  background: rgba(4,1,14,0.46);
+  backdrop-filter: blur(32px) saturate(1.4);
+  -webkit-backdrop-filter: blur(32px) saturate(1.4);
+  border: 1px solid rgba(212,175,55,0.14);
+  border-radius: 20px;
+  padding: 28px 24px 24px;
+  max-width: 310px;
+  margin: 32px auto 20px;
+  text-align: left;
+}
+
+/* ============================================================
+   ⑥ 相談案内（背景直書き）
+   ============================================================ */
+.consult-inner {
+  max-width: 490px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.consult-hl {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  font-weight: 500;
+  line-height: 1.52;
+  letter-spacing: 0.06em;
+  color: var(--white);
+  text-shadow:
+    0 2px 40px rgba(0,0,0,0.92),
+    0 1px 16px rgba(0,0,0,0.78);
+  margin: 28px 0 24px;
+}
+
+/* consult-lead — 既存 .consult-lead を再利用 */
+.consult-lead {
+  text-shadow: 0 2px 18px rgba(0,0,0,0.90) !important;
+  margin-bottom: 36px !important;
+}
+
+.consult-badges {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 44px;
+}
+
+.cbadge {
+  font-size: 0.72rem;
+  letter-spacing: 0.10em;
+  color: var(--gold-light);
+  border: 1px solid rgba(212,175,55,0.38);
+  border-radius: var(--radius-pill);
+  padding: 5px 14px;
+  background: transparent;
+}
+
+/* ============================================================
+   ⑦ 最終CTA（背景直書き）
+   ============================================================ */
+.final-catch {
+  font-family: var(--font-serif);
+  font-size: 1.80rem;
+  font-weight: 500;
+  line-height: 1.60;
+  letter-spacing: 0.06em;
+  color: var(--white);
+  text-shadow:
+    0 2px 40px rgba(0,0,0,0.88),
+    0 1px 16px rgba(0,0,0,0.70),
+    0 0 60px rgba(212,175,55,0.28);
+  margin: 28px 0 22px;
+}
+
+.final-sub {
+  font-size: 0.90rem;
+  font-weight: 300;
+  line-height: 2.0;
+  color: var(--w80);
+  letter-spacing: 0.04em;
+  margin-bottom: 40px;
+  text-shadow: 0 2px 18px rgba(0,0,0,0.90);
+}
+
+/* 最終CTAボタンの上品な呼吸エフェクト */
+.final-section .btn-large {
+  animation: btnBreathe 2.6s ease-in-out infinite;
+}
+.final-section .btn-large:hover {
+  animation: none;
+}
+
+@keyframes btnBreathe {
+  0%, 100% {
+    box-shadow:
+      0 2px 0 rgba(0,0,0,0.24),
+      0 8px 36px rgba(212,175,55,0.55),
+      0 2px 8px rgba(0,0,0,0.20),
+      inset 0 1px 0 rgba(255,255,255,0.55),
+      inset 0 -1px 0 rgba(0,0,0,0.16),
+      inset 0 0 0 1px rgba(255,255,255,0.14);
+  }
+  50% {
+    box-shadow:
+      0 2px 0 rgba(0,0,0,0.20),
+      0 20px 64px rgba(212,175,55,0.90),
+      0 4px 16px rgba(0,0,0,0.18),
+      inset 0 1px 0 rgba(255,255,255,0.65),
+      inset 0 -1px 0 rgba(0,0,0,0.12),
+      inset 0 0 0 1px rgba(255,255,255,0.22);
+  }
+}
+
+/* ============================================================
+   最終ブラッシュアップ — 映画的LP（Aman / Apple / Aesop 世界観）
+   ============================================================ */
+
+/* ── 全体：セクション余白を広げる ── */
+.lp-section { padding: 136px 28px; }
+
+/* ── ② 共感：左寄せ詩的コピー ── */
+.em-inner { text-align: left; }
+
+.em-lines {
+  margin: 72px 0 68px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+/* 2行1セット：1行目は軽く、2行目にインパクト */
+.em-stanza {}
+
+.em-prelude {
+  font-size: 0.82rem;
+  font-weight: 300;
+  color: var(--w55, rgba(255,255,255,0.55));
+  letter-spacing: 0.10em;
+  line-height: 1.6;
+  margin-bottom: 2px;
+  text-shadow: 0 1px 10px rgba(0,0,0,0.90);
+}
+
+.em-impact {
+  font-family: var(--font-serif);
+  font-size: 1.30rem;
+  font-weight: 500;
+  color: var(--white);
+  letter-spacing: 0.06em;
+  line-height: 1.75;
+  text-shadow:
+    0 2px 32px rgba(0,0,0,0.96),
+    0 1px 10px rgba(0,0,0,0.82);
+}
+
+/* 区切り線：左寄せ */
+.em-divider { margin: 0 0 56px; }
+
+/* クロージングコピーも左寄せ */
+.em-close { text-align: left; }
+
+/* ── ③ 人生の主導権とは：センター詩的コピー ── */
+.aq-label {
+  font-size: 0.84rem;
+  font-weight: 300;
+  letter-spacing: 0.16em;
+  color: var(--w55, rgba(255,255,255,0.55));
+  margin-top: 52px;
+  margin-bottom: 14px;
+  text-shadow: 0 1px 12px rgba(0,0,0,0.90);
+}
+
+/* aq-main を少し大きく・余白広げ */
+.aq-main {
+  font-size: 1.42rem;
+  line-height: 2.1;
+  margin-top: 0;
+}
+
+.aq-sub {
+  line-height: 2.1;
+}
+
+/* ── ④ 5つの視点：Apple縦タイムライン ── */
+.feat-inner { text-align: left; }
+
+.feat-timeline {
+  margin-top: 56px;
+}
+
+.ftl-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.ftl-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 14px;
+}
+
+.ftl-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(212,175,55,0.65);
+  background: rgba(212,175,55,0.10);
+  box-shadow:
+    0 0 12px rgba(212,175,55,0.45),
+    inset 0 0 4px rgba(212,175,55,0.18);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.ftl-line {
+  width: 1px;
+  min-height: 40px;
+  flex: 1;
+  background: linear-gradient(
+    to bottom,
+    rgba(212,175,55,0.30) 0%,
+    rgba(212,175,55,0.05) 100%
+  );
+  margin-top: 8px;
+}
+
+.ftl-right {
+  padding-bottom: 44px;
+  flex: 1;
+}
+.ftl-item:last-child .ftl-right { padding-bottom: 0; }
+
+.ftl-num {
+  display: block;
+  font-size: 0.60rem;
+  letter-spacing: 0.18em;
+  color: var(--gold-light);
+  margin-bottom: 6px;
+  text-shadow: 0 0 10px rgba(212,175,55,0.60);
+}
+
+.ftl-name {
+  font-family: var(--font-serif);
+  font-size: 1.14rem;
+  font-weight: 500;
+  color: var(--white);
+  letter-spacing: 0.05em;
+  line-height: 1.55;
+  margin-bottom: 6px;
+  text-shadow: 0 1px 18px rgba(0,0,0,0.90);
+}
+
+.ftl-desc {
+  font-size: 0.82rem;
+  font-weight: 300;
+  color: var(--w70);
+  line-height: 1.85;
+  letter-spacing: 0.03em;
+  text-shadow: 0 1px 10px rgba(0,0,0,0.80);
+}
+
+/* ── ⑤ 診断結果：小さく暗めのカード ── */
+.preview-showcase {
+  background: rgba(2,0,8,0.62);
+  max-width: 276px;
+  padding: 24px 20px 20px;
+  margin-top: 44px;
+}
+
+/* ── ⑥ 相談CTA：QR小さく・ボタン大きく ── */
+.consult-qr-img {
+  width: 108px;
+  height: 108px;
+}
+
+/* LINEボタン：高さ72px・強いゴールド光彩 */
+.consult-inner .btn-line {
+  min-height: 72px;
+  padding: 0 52px;
+  font-size: 1.0rem;
+  letter-spacing: 0.12em;
+  box-shadow:
+    0 3px 0 rgba(0,0,0,0.22),
+    0 24px 72px rgba(212,175,55,0.85),
+    0 6px 20px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.58),
+    inset 0 -1px 0 rgba(0,0,0,0.16),
+    inset 0 0 0 1px rgba(255,255,255,0.16);
+}
+.consult-inner .btn-line:hover {
+  box-shadow:
+    0 3px 0 rgba(0,0,0,0.18),
+    0 32px 90px rgba(212,175,55,1.00),
+    0 8px 28px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.68),
+    inset 0 -1px 0 rgba(0,0,0,0.12),
+    inset 0 0 0 1px rgba(255,255,255,0.22);
+}
+
+/* ── 全体：レスポンシブ調整 ── */
+@media (max-width: 374px) {
+  .lp-section    { padding: 100px 20px; }
+  .em-impact     { font-size: 1.12rem; }
+  .aq-main       { font-size: 1.22rem; }
+  .ftl-name      { font-size: 1.04rem; }
+  .consult-inner .btn-line { min-height: 64px; padding: 0 36px; font-size: 0.92rem; }
+}
+
+@media (min-width: 480px) {
+  .em-impact     { font-size: 1.40rem; }
+}
+
+@media (min-width: 768px) {
+  .lp-section    { padding: 160px 56px; }
+  .em-impact     { font-size: 1.48rem; }
+  .aq-main       { font-size: 1.58rem; }
+  .feat-timeline { max-width: 460px; }
+  .ftl-name      { font-size: 1.20rem; }
+  .preview-showcase { max-width: 300px; }
+}
+
+/* タイムライン縦線：高さを隣コンテンツに揃える */
+.ftl-item { align-items: stretch; }
